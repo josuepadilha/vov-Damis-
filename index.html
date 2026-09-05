@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vovó Damis - Painel Parental VIP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #f4f6f9;
+            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 15px 15px 80px 15px;
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;
+        }
+        .header h2 {
+            color: #2b6cb0; font-size: 1.1rem; margin: 0; display: flex; align-items: center; gap: 6px;
+        }
+        .vip-banner {
+            background: linear-gradient(135deg, #3182ce, #d53f8c); color: white;
+            padding: 10px 14px; border-radius: 10px; margin-bottom: 15px;
+            display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem;
+            box-shadow: 0 3px 8px rgba(49, 130, 206, 0.2);
+        }
+        .vip-banner span {
+            font-weight: bold; background: rgba(255,255,255,0.25); padding: 3px 8px; border-radius: 5px;
+        }
+
+        .view { display: none; }
+        .view.active { display: block; }
+
+        .destaques-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .card-destaque {
+            background: linear-gradient(135deg, #ebf8ff, #fff5f7); border: 1px solid #cbd5e0;
+            padding: 12px 8px; border-radius: 12px; text-align: center; cursor: pointer;
+        }
+        .card-destaque * { pointer-events: none; }
+        .card-destaque i { font-size: 1.5rem; color: #d53f8c; margin-bottom: 4px; display: block; }
+        .card-destaque h3 { margin: 0 0 2px 0; color: #2b6cb0; font-size: 0.8rem; }
+        .card-destaque p { margin: 0; font-size: 0.65rem; color: #4a5568; }
+
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-bottom: 20px; }
+        .card-funcao {
+            background: #ffffff; padding: 12px 6px; border-radius: 10px; text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03); border-top: 3px solid #3182ce; cursor: pointer; position: relative;
+        }
+        .card-funcao * { pointer-events: none; }
+        .card-funcao i { font-size: 1.4rem; color: #3182ce; margin-bottom: 6px; display: block; }
+        .card-funcao span { display: block; font-size: 0.68rem; color: #4a5568; font-weight: 600; line-height: 1.15; }
+        .badge-vip {
+            position: absolute; top: 4px; right: 4px; background: #fff0f5; color: #d53f8c;
+            font-size: 0.5rem; padding: 1px 4px; border-radius: 4px; font-weight: bold; pointer-events: none;
+        }
+
+        .sub-header {
+            display: flex; align-items: center; justify-content: space-between;
+            background: #fff; padding: 12px 15px; border-radius: 10px; margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+        .sub-header h3 { margin: 0; color: #2b6cb0; font-size: 1rem; }
+        .btn-voltar { background: none; border: none; color: #2b6cb0; font-size: 1.1rem; cursor: pointer; padding: 5px; }
+
+        .app-list-item {
+            background: #fff; padding: 14px; border-radius: 10px; margin-bottom: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04); font-size: 0.85rem; font-weight: 600; cursor: pointer;
+        }
+        .section-title { font-size: 0.75rem; font-weight: bold; color: #718096; margin: 15px 0 6px 4px; text-transform: uppercase; }
+
+        .tabs-container { display: flex; background: #e2e8f0; border-radius: 8px; padding: 4px; margin-bottom: 15px; }
+        .tab-btn {
+            flex: 1; text-align: center; padding: 8px; font-size: 0.8rem; font-weight: bold; color: #4a5568;
+            border-radius: 6px; cursor: pointer; border: none; background: none;
+        }
+        .tab-btn.active { background: #fff; color: #2b6cb0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff;
+            display: flex; justify-content: space-around; padding: 10px 0;
+            border-top: 1px solid #e2e8f0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 1000; box-sizing: border-box;
+        }
+        .nav-item { text-align: center; color: #718096; font-size: 0.65rem; font-weight: bold; cursor: pointer; background: none; border: none; flex: 1; }
+        .nav-item i { font-size: 1.2rem; display: block; margin-bottom: 2px; }
+        .nav-item.active { color: #2b6cb0; }
+
+        .sub-bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff;
+            display: flex; justify-content: space-around; padding: 8px 0;
+            border-top: 1px solid #e2e8f0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 1000; box-sizing: border-box;
+        }
+        .sub-nav-item { text-align: center; color: #718096; font-size: 0.65rem; font-weight: bold; cursor: pointer; background: none; border: none; flex: 1; }
+        .sub-nav-item i { font-size: 1.2rem; display: block; margin-bottom: 2px; }
+        .sub-nav-item.active { color: #3182ce; }
+
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; z-index: 1100;
+        }
+        .modal-content { background: #ffffff; color: #333; padding: 20px; border-radius: 12px; width: 100%; max-width: 340px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        label { font-size: 0.75rem; font-weight: bold; color: #4a5568; display: block; margin-top: 8px; }
+        select, textarea, input { width: 100%; padding: 10px; margin-top: 4px; border-radius: 6px; border: 1px solid #cbd5e0; box-sizing: border-box; font-size: 0.85rem; }
+        .btn-acao { background: #d53f8c; color: white; border: none; padding: 10px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 12px; }
+        .btn-fechar { background: #e2e8f0; color: #4a5568; border: none; padding: 8px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 6px; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e0; transition: .3s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background-color: #3182ce; }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        .schedule-grid { width: 100%; border-collapse: collapse; background: #fff; font-size: 0.7rem; margin-top: 10px; border-radius: 8px; overflow: hidden; }
+        .schedule-grid th, .schedule-grid td { border: 1px solid #edf2f7; text-align: center; padding: 6px 2px; }
+        .schedule-grid th { background: #f7fafc; color: #4a5568; }
+        .schedule-cell { background: #fed7d7; height: 22px; cursor: pointer; }
+        .schedule-cell.active { background: #feb2b2; }
+
+        .whitelist-search { width: 100%; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e0; margin-bottom: 15px; box-sizing: border-box; font-size: 0.85rem; outline: none; background: #fff; }
+        .app-row { background: #fff; padding: 12px 15px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+        .app-row-left { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 600; color: #2d3748; }
+        .btn-add-app { background: none; border: none; color: #3182ce; font-size: 1.2rem; cursor: pointer; }
+
+        .sub-view { display: none; }
+        .sub-view.active { display: block; }
+        .sound-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .sound-card { background: #fff; border-radius: 12px; padding: 20px 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid #e2e8f0; }
+        .sound-card i { font-size: 2.2rem; color: #3182ce; margin-bottom: 10px; display: block; }
+        .sound-card span { font-size: 0.75rem; font-weight: bold; color: #4a5568; line-height: 1.2; display: block; }
+        .tela-streaming { background: #1a202c; height: 180px; border-radius: 8px; margin: 10px 0; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #fff; position: relative; }
+        .live-dot { position: absolute; top: 8px; left: 8px; background: #e53e3e; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== TELA PRINCIPAL (CASA) ==================== -->
+    <div id="view-casa" class="view active">
+        <div class="header">
+            <button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Painel Parental</h2>
+            <button class="btn-voltar" onclick="mudarAba('outros')"><i class="fa-solid fa-bars"></i></button>
+        </div>
+
+        <div class="vip-banner">
+            <div><i class="fa-solid fa-crown"></i> <strong>Azure DB (vovo-damis-db)</strong></div>
+            <span>Até 6 Aparelhos</span>
+        </div>
+
+        <div class="destaques-container">
+            <div class="card-destaque" onclick="abrirEspelhamento()">
+                <i class="fa-solid fa-display"></i>
+                <h3>Espelhamento Ao Vivo</h3>
+                <p>Vídeo em tempo real</p>
+            </div>
+            <div class="card-destaque" onclick="abrirModalMensagem()">
+                <i class="fa-solid fa-paper-plane" style="color: #3182ce;"></i>
+                <h3>Enviar Mensagem</h3>
+                <p>Individual ou Grupo</p>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card-funcao" onclick="mudarSubTela('view-mod-bloquear')">
+                <i class="fa-solid fa-mobile-screen-button"></i>
+                <span>Bloquear Telefone</span>
+            </div>
+            <div class="card-funcao" onclick="mudarSubTela('view-sub-apps')">
+                <i class="fa-solid fa-ban"></i>
+                <span>Bloquear Aplicativos</span>
+            </div>
+            <div class="card-funcao" onclick="mudarSubTela('view-sub-uso')">
+                <i class="fa-solid fa-chart-column"></i>
+                <span>Uso de Aplicativos</span>
+            </div>
+
+            <div class="card-funcao" onclick="mudarAba('mapa')">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>Localização</span>
+            </div>
+            <div class="card-funcao" onclick="mudarSubTela('view-mod-sons')">
+                <span class="badge-vip">new</span>
+                <i class="fa-solid fa-headphones"></i>
+                <span>Sons</span>
+            </div>
+            <div class="card-funcao" onclick="mudarSubTela('view-sub-ecra')">
+                <span class="badge-vip">new</span>
+                <i class="fa-solid fa-camera-retro"></i>
+                <span>Registros de ecrã</span>
+            </div>
+
+            <div class="card-funcao" onclick="mudarSubTela('view-sub-noticias')">
+                <i class="fa-solid fa-newspaper"></i>
+                <span>Fluxo de Notícias</span>
+            </div>
+            <div class="card-funcao" onclick="mudarSubTela('view-sub-notificacoes')">
+                <i class="fa-solid fa-bell"></i>
+                <span>Histórico de notificações</span>
+            </div>
+            <div class="card-funcao" onclick="mudarAba('historico')">
+                <i class="fa-solid fa-comments"></i>
+                <span>Histórico de Mensageiros</span>
+            </div>
+
+            <div class="card-funcao" onclick="mudarSubTela('view-sub-web')">
+                <i class="fa-solid fa-globe"></i>
+                <span>Controle de Web</span>
+            </div>
+            <div class="card-funcao" onclick="mudarSubTela('view-sub-youtube')">
+                <i class="fa-brands fa-youtube" style="color: #e53e3e;"></i>
+                <span>Youtube Controle</span>
+            </div>
+            <div class="card-funcao" onclick="mudarSubTela('view-sub-olhos')">
+                <i class="fa-solid fa-eye"></i>
+                <span>Proteger os olhos</span>
+            </div>
+
+            <div class="card-funcao" onclick="mudarSubTela('view-sub-noite')">
+                <i class="fa-solid fa-moon"></i>
+                <span>Modo noturno</span>
+            </div>
+            <div class="card-funcao" onclick="mudarSubTela('view-mod-chamadas')">
+                <i class="fa-solid fa-phone-volume"></i>
+                <span>Histórico de Chamadas</span>
+            </div>
+            <div class="card-funcao" onclick="mudarSubTela('view-sub-sms')">
+                <i class="fa-solid fa-envelope"></i>
+                <span>Histórico de SMS</span>
+            </div>
+
+            <div class="card-funcao" onclick="mudarSubTela('view-sub-fotos')">
+                <i class="fa-solid fa-image"></i>
+                <span>Ver Fotos</span>
+            </div>
+            <div class="card-funcao" onclick="mudarSubTela('view-sub-contatos')">
+                <i class="fa-solid fa-address-book"></i>
+                <span>Listar Contatos</span>
+            </div>
+            <div class="card-funcao" onclick="mudarSubTela('view-sub-estatisticas')">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Estatisticas</span>
+            </div>
+
+            <div class="card-funcao" onclick="mudarAba('tarefas')">
+                <span class="badge-vip">VIP</span>
+                <i class="fa-solid fa-clipboard-list" style="color: #d53f8c;"></i>
+                <span>Tarefas / Alerta</span>
+            </div>
+            <div class="card-funcao" onclick="abrirWalkieTalkie()">
+                <span class="badge-vip">VIP</span>
+                <i class="fa-solid fa-walkie-talkie"></i>
+                <span>Walkie-Talkie</span>
+            </div>
+            <div class="card-funcao" style="border-top-color: #d53f8c;" onclick="mudarAba('outros')">
+                <i class="fa-solid fa-gear" style="color: #d53f8c;"></i>
+                <span>Outros / Config</span>
+            </div>
+        </div>
+  </div>
+      <!-- ==================== SUB-MÓDULO: BLOQUEAR TELEFONE (Com Abas) ==================== -->
+    <div id="view-mod-bloquear" class="view" style="padding-bottom: 80px;">
+        <div class="header">
+            <button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Bloquear Telefone</h2>
+            <i class="fa-solid fa-bars" style="color: #2b6cb0;"></i>
+        </div>
+
+        <div id="sub-bloq-1" class="sub-view active">
+            <div style="background:#fff; padding:30px; border-radius:12px; text-align:center; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+                <i class="fa-solid fa-shield-halved" style="font-size:4rem; color:#3182ce; margin-bottom:15px;"></i>
+                <div style="background:#ebf8ff; padding:15px; border-radius:8px; margin-bottom:20px; color:#2b6cb0; font-size:0.85rem;">
+                    Bloqueio instantâneo do dispositivo remoto.
+                </div>
+                <button class="btn-acao" style="background:#ff5c75; font-size:0.95rem; padding:14px;" onclick="alert('🔒 Aparelho bloqueado com sucesso!')">Bloquear Telefone</button>
+            </div>
+        </div>
+
+        <div id="sub-bloq-2" class="sub-view">
+            <div class="app-list-item">
+                <span style="font-size:0.85rem; font-weight:bold;">Bloquear o telefone segundo o horário</span>
+                <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="schedule-grid">
+                    <tr><th></th><th>SEG</th><th>TER</th><th>QUA</th><th>QUI</th><th>SEX</th><th>SÁB</th><th>DOM</th></tr>
+                    <tr><td>00:00</td><td class="schedule-cell active" onclick="this.classList.toggle('active')"></td><td class="schedule-cell active" onclick="this.classList.toggle('active')"></td><td class="schedule-cell active" onclick="this.classList.toggle('active')"></td><td class="schedule-cell active" onclick="this.classList.toggle('active')"></td><td class="schedule-cell active" onclick="this.classList.toggle('active')"></td><td class="schedule-cell active" onclick="this.classList.toggle('active')"></td><td class="schedule-cell active" onclick="this.classList.toggle('active')"></td></tr>
+                    <tr><td>01:00</td><td class="schedule-cell active" onclick="this.classList.toggle('active')"></td><td class="schedule-cell active" onclick="this.classList.toggle('active')"></td><td class="schedule-cell active" onclick="this.classList.toggle('active')"></td><td class="schedule-cell active" onclick="this.classList.toggle('active')"></td><td class="schedule-cell active" onclick="this.classList.toggle('active')"></td><td class="schedule-cell active" onclick="this.classList.toggle('active')"></td><td class="schedule-cell active" onclick="this.classList.toggle('active')"></td></tr>
+                </table>
+            </div>
+            <button class="btn-acao" style="background:#3182ce; margin-top:15px;" onclick="alert('Reinicializado com sucesso!')">Reinicializar</button>
+        </div>
+
+        <div id="sub-bloq-3" class="sub-view">
+            <input type="text" class="whitelist-search" placeholder="Pesquisar um aplicativo">
+            <p style="font-size:0.75rem; color:#718096; margin-bottom:12px;">Aplicações escolhidas não serão bloqueadas durante o bloqueio</p>
+            <div class="app-row"><div class="app-row-left"><i class="fa-solid fa-shield-heart" style="color:#3182ce;"></i> Kids360</div><button class="btn-add-app"><i class="fa-solid fa-plus"></i></button></div>
+            <div class="app-row"><div class="app-row-left"><i class="fa-brands fa-youtube" style="color:#e53e3e;"></i> YouTube</div><button class="btn-add-app"><i class="fa-solid fa-plus"></i></button></div>
+        </div>
+
+        <nav class="sub-bottom-nav">
+            <button class="sub-nav-item active" id="nav-b1" onclick="mudarSubBloq(1)"><i class="fa-solid fa-shield"></i> Bloquear</button>
+            <button class="sub-nav-item" id="nav-b2" onclick="mudarSubBloq(2)"><i class="fa-solid fa-calendar-days"></i> horário</button>
+            <button class="sub-nav-item" id="nav-b3" onclick="mudarSubBloq(3)"><i class="fa-solid fa-list-check"></i> Lista branca</button>
+        </nav>
+    </div>
+
+
+    <!-- ==================== SUB-MÓDULO: SONS ==================== -->
+    <div id="view-mod-sons" class="view">
+        <div class="header">
+            <button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Sons ao Redor</h2>
+            <i class="fa-solid fa-bars"></i>
+        </div>
+        <div class="sound-grid">
+            <div class="sound-card" onclick="alert('Gravando áudio de 30 segundos...')">
+                <i class="fa-solid fa-circle-dot" style="color:#e53e3e;"></i>
+                <span>Grave sons de 30 segundos ao redor</span>
+            </div>
+            <div class="sound-card" onclick="alert('Ouvindo áudio...')">
+                <i class="fa-solid fa-ear-listen"></i>
+                <span>Ouça os sons ao redor</span>
+            </div>
+            <div class="sound-card" onclick="alert('🚨 Sirene disparada!')">
+                <i class="fa-solid fa-bullhorn" style="color:#d53f8c;"></i>
+                <span>Tocar sirene alta</span>
+            </div>
+            <div class="sound-card" onclick="alert('Abrindo definições de som...')">
+                <i class="fa-solid fa-sliders"></i>
+                <span>Definições de som</span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== SUB-MÓDULO: CHAMADAS / ADVANCED PC ==================== -->
+    <div id="view-mod-chamadas" class="view">
+        <div class="header">
+            <button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Histórico de Chamadas</h2>
+            <i class="fa-solid fa-circle-question"></i>
+        </div>
+        <div style="background:#fff; padding:20px; border-radius:12px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+            <i class="fa-solid fa-lock" style="font-size:3.5rem; color:#f6ad55; margin-bottom:15px;"></i>
+            <h3 style="color:#2d3748; font-size:1rem; margin-bottom:10px;">Emparelhe o dispositivo com seu Mac ou PC com Windows</h3>
+            <p style="font-size:0.8rem; color:#718096; line-height:1.4; margin-bottom:15px;">Para instalar a Kroha Advanced e obter estatísticas completas.</p>
+            <button class="btn-acao" style="background:#3182ce;" onclick="alert('Baixando Kroha Advanced...')">Saiba mais</button>
+        </div>
+    </div>
+
+
+    <!-- Outras Sub-telas Padrão -->
+    <div id="view-sub-apps" class="view"><div class="sub-header"><button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button><h3>Bloquear Aplicativos</h3><div></div></div><div class="app-list-item"><span>Sempre desbloqueado (77)</span></div><div class="app-list-item"><span>Sempre bloqueado (2)</span></div></div>
+    <div id="view-sub-uso" class="view"><div class="sub-header"><button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button><h3>Uso de Aplicativos</h3><div></div></div><div class="app-list-item"><span>YouTube</span> <strong>38 min</strong></div></div>
+    <div id="view-sub-ecra" class="view"><div class="sub-header"><button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button><h3>Registros de Ecrã</h3><div></div></div><button class="btn-acao" onclick="alert('Captura solicitada!')">Solicitar Captura</button></div>
+    <div id="view-sub-noticias" class="view"><div class="sub-header"><button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button><h3>Fluxo de Notícias</h3><div></div></div><div class="app-list-item"><span>Nenhum conteúdo impróprio</span></div></div>
+    <div id="view-sub-notificacoes" class="view"><div class="sub-header"><button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button><h3>Notificações</h3><div></div></div><div class="app-list-item"><span>WhatsApp - Mensagem de voz</span></div></div>
+    <div id="view-sub-web" class="view"><div class="sub-header"><button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button><h3>Controle de Web</h3><div></div></div><div class="app-list-item"><span>Pesquisa Segura</span> <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div></div>
+    <div id="view-sub-youtube" class="view"><div class="sub-header"><button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button><h3>Youtube Controle</h3><div></div></div><div class="app-list-item"><span>Bloquear Shorts</span> <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div></div>
+    <div id="view-sub-olhos" class="view"><div class="sub-header"><button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button><h3>Proteger os olhos</h3><div></div></div><div class="app-list-item"><span>Filtro Azul</span> <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div></div>
+    <div id="view-sub-noite" class="view"><div class="sub-header"><button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button><h3>Modo noturno</h3><div></div></div><div class="app-list-item"><span>Bloqueio às 22:00</span> <label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div></div>
+    <div id="view-sub-sms" class="view"><div class="sub-header"><button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button><h3>Histórico de SMS</h3><div></div></div><div class="app-list-item"><span>Operadora - Recarga efetuada</span></div></div>
+    <div id="view-sub-fotos" class="view"><div class="sub-header"><button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button><h3>Ver Fotos</h3><div></div></div><div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;"><div style="background:#cbd5e0; height:90px; border-radius:8px;"></div><div style="background:#cbd5e0; height:90px; border-radius:8px;"></div></div></div>
+    <div id="view-sub-contatos" class="view"><div class="sub-header"><button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button><h3>Listar Contatos</h3><div></div></div><div class="app-list-item"><span>Pai / Responsável</span></div></div>
+    <div id="view-sub-estatisticas" class="view"><div class="sub-header"><button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button><h3>Estatisticas</h3><div></div></div><div class="app-list-item"><span>Média: 1h 15m / dia</span></div></div>
+
+
+    <!-- ==================== TELA HISTÓRICO ==================== -->
+    <div id="view-historico" class="view">
+        <div class="sub-header"><button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button><h3>Histórico de Mensageiros</h3><div></div></div>
+        <div class="app-list-item"><div><strong>WhatsApp</strong><br><small style="color:#718096;">Mensagens de voz e chats monitorados</small></div></div>
+    </div>
+
+
+    <!-- ==================== TELA TAREFAS ==================== -->
+    <div id="view-tarefas" class="view">
+        <div class="sub-header"><button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button><h3>Tarefas / Alerta</h3><div></div></div>
+        <div style="background:#fff; padding:20px; border-radius:10px; text-align:center;">
+            <h3 style="color:#2b6cb0;">Tarefa Ativa</h3>
+            <p style="font-size:0.8rem; color:#718096;">"Buscar Pablo na escola às 16:00"</p>
+        </div>
+    </div>
+
+
+    <!-- ==================== TELA MAPA ==================== -->
+    <div id="view-mapa" class="view">
+        <div class="sub-header"><button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button><h3>Localização GPS</h3><i class="fa-solid fa-rotate" onclick="alert('Atualizando...')"></i></div>
+        <div style="background:#2b6cb0; height:350px; border-radius:12px; display:flex; flex-direction:column; justify-content:center; align-items:center; color:white;">
+            <i class="fa-solid fa-map-location-dot" style="font-size:4rem; margin-bottom:10px;"></i>
+            <span style="font-weight:bold;">Navegantes - SC</span>
+        </div>
+    </div>
+
+
+    <!-- ==================== TELA OUTROS ==================== -->
+    <div id="view-outros" class="view">
+        <div class="sub-header"><button class="btn-voltar" onclick="mudarAba('casa')"><i class="fa-solid fa-arrow-left"></i></button><h3>Configurações</h3><div></div></div>
+        <div class="app-list-item" onclick="alert('Família: Até 6 Aparelhos')"><span>Família</span></div>
+        <div class="app-list-item" onclick="alert('Conta Protegida por CPF')"><span>Minha Conta</span></div>
+        <div class="app-list-item" onclick="alert('Plano VIP Ativo')"><span>Assinatura</span></div>
+    </div>
+
+
+    <!-- ==================== BARRA INFERIOR FIXA ==================== -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" id="nav-casa" onclick="mudarAba('casa')"><i class="fa-solid fa-house"></i> Casa</button>
+        <button class="nav-item" id="nav-historico" onclick="mudarAba('historico')"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</button>
+        <button class="nav-item" id="nav-tarefas" onclick="mudarAba('tarefas')"><i class="fa-solid fa-list-check"></i> Tarefas</button>
+        <button class="nav-item" id="nav-mapa" onclick="mudarAba('mapa')"><i class="fa-solid fa-location-dot"></i> Mapa</button>
+        <button class="nav-item" id="nav-outros" onclick="mudarAba('outros')"><i class="fa-solid fa-ellipsis"></i> Outros</button>
+    </nav>
+
+
+    <!-- Modais -->
+    <div id="modalMensagem" class="modal">
+        <div class="modal-content">
+            <h3>Enviar Mensagem</h3>
+            <textarea id="textoMsg" rows="3" placeholder="Digite a mensagem..."></textarea>
+            <button class="btn-acao" onclick="enviarMensagem()">Disparar</button>
+            <button class="btn-fechar" onclick="fecharModalMensagem()">Cancelar</button>
+        </div>
+    </div>
+
+    <div id="modalEspelho" class="modal">
+        <div class="modal-content" style="background:#1a202c; color:#fff;">
+            <h3>Espelhamento Ao Vivo</h3>
+            <div class="tela-streaming"><div class="live-dot">● AO VIVO</div><i class="fa-solid fa-mobile-screen" style="font-size:2.5rem;"></i></div>
+            <button class="btn-acao" style="background:#e53e3e;" onclick="fecharEspelhamento()">Fechar</button>
+        </div>
+    </div>
+
+
+    <!-- Script -->
+    <script>
+        function mudarAba(aba) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            const targetView = document.getElementById('view-' + aba);
+            const targetNav = document.getElementById('nav-' + aba);
+            
+            if (targetView) targetView.classList.add('active');
+            if (targetNav) targetNav.classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function mudarSubTela(idSubTela) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            const targetSub = document.getElementById(idSubTela);
+            if (targetSub) targetSub.classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function abrirModalMensagem() { document.getElementById('modalMensagem').style.display = 'flex'; }
+        function fecharModalMensagem() { document.getElementById('modalMensagem').style.display = 'none'; }
+        
+        function enviarMensagem() {
+            alert("✅ Mensagem enviada com sucesso!");
+            fecharModalMensagem();
+        }
+
+        function abrirEspelhamento() { document.getElementById('modalEspelho').style.display = 'flex'; }
+        function fecharEspelhamento() { document.getElementById('modalEspelho').style.display = 'none'; }
+
+        function abrirWalkieTalkie() {
+            alert("🎙️ Walkie-Talkie VIP aberto!");
+        }
+
+        function mudarSubBloq(num) {
+            document.querySelectorAll('#view-mod-bloquear .sub-view').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('#view-mod-bloquear .sub-nav-item').forEach(i => i.classList.remove('active'));
+            
+            document.getElementById('sub-bloq-' + num).classList.add('active');
+            document.getElementById('nav-b' + num).classList.add('active');
+        }
+    </script>
+</body>
+                                                                  </html>
+                                                                  
