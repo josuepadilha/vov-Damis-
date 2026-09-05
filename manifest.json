@@ -1,6 +1,7 @@
 {
   "name": "Vovó Damis",
   "short_name": "Vovó Damis",
+  "description": "Painel de controle parental",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
